@@ -19,6 +19,7 @@ const signin = (req, res) => {
     const token = jwt.sign(
       {
         id: user._id,
+        username: user.username,
       },
       config.JWT_SECRET
     );

@@ -10,6 +10,7 @@ const config = require("./config/config");
 
 const userRoute = require("./routes/user.routes");
 const authRoute = require("./routes/auth.routes");
+const chitterRoute = require("./routes/chitter.routes");
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(cookieParser());
 
 app.use("/api", authRoute);
 app.use("/users", userRoute);
+app.use("/chitter", chitterRoute);
 
 app.listen(config.PORT, (err) => {
   if (err) return console.log(err, " an error occured");

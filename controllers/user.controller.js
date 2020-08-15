@@ -48,4 +48,33 @@ const read = (req, res) => {
   return res.status(200).json(req.profile);
 };
 
-module.exports = { list, create, userByUsername, read };
+const update = (req, res) => {
+  let user = req.profile;
+  user.overwrite(req.body);
+  user.save((err) => {
+    if (err) {
+      res.status(500).json({
+        error: errorHandler.getErrorMessage(err),
+      });
+    }
+  });
+  user.hashed_password = undefined;
+  user.salt = undefined;
+  res.status(200).json(user);
+};
+
+const remove = (req, res) => {
+  const user = req.profile;
+  user.remove((err, deletedUser) => {
+    if (err) {
+      res.status(500).json({
+        error: errorHandler.getErrorMessage(err),
+      });
+    }
+    deletedUser.hashed_password = undefined;
+    deletedUser.salt = undefined;
+    res.status(200).json(deletedUser);
+  });
+};
+
+module.exports = { list, create, userByUsername, read, remove, update };
