@@ -7,12 +7,16 @@ const create = (req, res) => {
   user
     .save()
     .then((result) => {
-      res.json(result);
+      result.hashed_password = undefined;
+      result.salt = undefined;
+      res.status(200).redirect("/?isSignedup=success");
     })
     .catch((err) => {
       console.log("ERROR: ", err);
-      res.status(400).json({
-        error: errorHandler.getErrorMessage(err),
+      const error = errorHandler.getErrorMessage(err);
+      res.status(400).render("error.ejs", {
+        title: "Couldn't make new account",
+        message: error,
       });
     });
 };

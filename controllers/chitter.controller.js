@@ -14,7 +14,7 @@ const create = (req, res) => {
   newChitter
     .save()
     .then((chitter) => {
-      res.status(200).json(chitter);
+      res.status(200).redirect("/");
     })
     .catch((err) => {
       res.status(500).json({
@@ -24,14 +24,22 @@ const create = (req, res) => {
 };
 
 const list = (req, res) => {
-  Chitter.find((err, chitter) => {
-    if (err) {
-      res.status(500).json({
-        error: "Couldn't get chitters.",
-      });
-    }
-    res.status(200).json(chitter);
-  });
+  Chitter.find()
+    .sort({ created: "desc" })
+    .exec((err, chitter) => {
+      if (err) {
+        res.status(500).json({
+          error: "Couldn't get chitters.",
+        });
+      }
+      res
+        .status(200)
+        .render("chitters.ejs", {
+          chitters: chitter,
+          title: "Chitters",
+          user: req.auth,
+        });
+    });
 };
 
 const findById = (req, res, next, id) => {
@@ -47,7 +55,11 @@ const findById = (req, res, next, id) => {
 };
 
 const read = (req, res) => {
-  return res.status(200).json(req.chitter);
+  return res.status(200).render("chitter.ejs", {
+    chitter: req.chitter,
+    title: `Chitter | ${req.chitter.chitter}`,
+    user: req.auth,
+  });
 };
 
 const newComment = (req, res) => {
@@ -70,7 +82,7 @@ const newComment = (req, res) => {
       });
     }
   });
-  res.status(200).json(existingComment);
+  res.status(200).redirect(`/chitter/${chitter._id}`);
 };
 
 module.exports = { create, list, findById, read, newComment };

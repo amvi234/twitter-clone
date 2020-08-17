@@ -1,10 +1,10 @@
 const jwt = require("jsonwebtoken");
-const expressJwt = require("express-jwt");
 
 const User = require("../models/user.model");
 const config = require("../config/config");
 
 const signin = (req, res) => {
+  console.log(req);
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err || !user) {
       return res.status(404).json({
@@ -26,30 +26,27 @@ const signin = (req, res) => {
     res.cookie("t", token, {
       expire: new Date() + 9999,
     });
-    return res.status(200).json({
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        username: user.username,
-        email: user.email,
-      },
-    });
+    return res.status(200).redirect("/");
   });
 };
 
 const signout = (req, res) => {
   res.clearCookie("t");
-  return res.status(200).json({
-    message: "Signed Out",
-  });
+  return res.status(200).redirect("/");
 };
 
-const requireSignIn = expressJwt({
-  secret: config.JWT_SECRET,
-  userProperty: "auth",
-  algorithms: ["HS256"],
-});
+const requireSignIn = (req, res, next) => {
+  if (!req.cookies.t)
+    return res
+      .status(401)
+      .render("error.ejs", {
+        title: "Please Login",
+        message: "Please login to continue",
+      });
+  const decoded = jwt.verify(req.cookies.t, config.JWT_SECRET);
+  req.auth = decoded;
+  next();
+};
 
 const hasAuthorization = (req, res, next) => {
   const authorized = req.profile && req.auth && req.auth._id == req.profile._id;
