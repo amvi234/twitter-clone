@@ -24,8 +24,9 @@ const create = (req, res) => {
 const list = (req, res) => {
   User.find((err, user) => {
     if (err) {
-      return res.status(500).json({
-        error: "Couldn't get the users",
+      return res.status(500).render("error.ejs", {
+        message: "Couldn't get the users",
+        title: "Error!",
       });
     }
     user.forEach((u) => {
@@ -47,7 +48,10 @@ const userByUsername = (req, res, next, username) => {
     if (err || !user) {
       return res
         .status(404)
-        .json({ error: `No user of username: ${username}` });
+        .render("error.ejs", {
+          message: `No user of username: ${username}`,
+          title: "Error!",
+        });
     }
     req.profile = user;
     next();
@@ -68,27 +72,29 @@ const update = (req, res) => {
   user.overwrite(req.body);
   user.save((err) => {
     if (err) {
-      res.status(500).json({
-        error: errorHandler.getErrorMessage(err),
+      res.status(500).render("error.ejs", {
+        message: errorHandler.getErrorMessage(err),
+        title: "Error!",
       });
     }
   });
   user.hashed_password = undefined;
   user.salt = undefined;
-  res.status(200).json(user);
+  res.status(200).redirect(`/users/${req.profile.username}`);
 };
 
 const remove = (req, res) => {
   const user = req.profile;
   user.remove((err, deletedUser) => {
     if (err) {
-      res.status(500).json({
-        error: errorHandler.getErrorMessage(err),
+      res.status(500).render("error.ejs", {
+        message: errorHandler.getErrorMessage(err),
+        title: "Error!",
       });
     }
     deletedUser.hashed_password = undefined;
     deletedUser.salt = undefined;
-    res.status(200).json(deletedUser);
+    res.status(200).redirect("/");
   });
 };
 

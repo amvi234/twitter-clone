@@ -17,8 +17,9 @@ const create = (req, res) => {
       res.status(200).redirect("/");
     })
     .catch((err) => {
-      res.status(500).json({
-        error: errorHandler.getErrorMessage(err),
+      res.status(500).render("error.ejs", {
+        title: "Error!",
+        message: errorHandler.getErrorMessage(err),
       });
     });
 };
@@ -28,8 +29,9 @@ const list = (req, res) => {
     .sort({ created: "desc" })
     .exec((err, chitter) => {
       if (err) {
-        res.status(500).json({
-          error: "Couldn't get chitters.",
+        res.status(500).render("error.ejs", {
+          message: "Couldn't get chitters.",
+          title: "Error",
         });
       }
       res.status(200).render("chitters.ejs", {
@@ -43,8 +45,9 @@ const list = (req, res) => {
 const findById = (req, res, next, id) => {
   Chitter.findById(id).exec((err, chitter) => {
     if (err || !chitter) {
-      res.status(404).json({
-        error: "No Chitter Found",
+      res.status(404).render("error.ejs", {
+        message: "No Chitter Found",
+        title: "Error!",
       });
     }
     req.chitter = chitter;
@@ -95,8 +98,9 @@ const newComment = (req, res) => {
   existingComment.push(newComment);
   chitter.updateOne({ comments: existingComment }, (err) => {
     if (err) {
-      res.status(500).json({
-        error: errorHandler.getErrorMessage(err),
+      res.status(500).render("error.ejs", {
+        message: errorHandler.getErrorMessage(err),
+        title: "Error!",
       });
     }
   });

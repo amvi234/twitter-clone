@@ -6,13 +6,15 @@ const config = require("../config/config");
 const signin = (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err || !user) {
-      return res.status(404).json({
-        error: "No user found.",
+      return res.status(404).render("error.ejs", {
+        title: "Please Login",
+        message: "No user found.",
       });
     }
     if (!user.authenticate(req.body.password)) {
-      return res.status(401).json({
-        error: "Email and password don't match.",
+      return res.status(401).render("error.ejs", {
+        title: "Couldn't Signin",
+        message: "Email and password don't match.",
       });
     }
     const token = jwt.sign(
@@ -48,7 +50,7 @@ const requireSignIn = (req, res, next) => {
 const hasAuthorization = (req, res, next) => {
   const authorized = req.profile && req.auth && req.auth._id == req.profile._id;
   if (!authorized) {
-    return res.status(401).json({ error: "Unauthorizes" });
+    return res.status(401).render("error.ejs", { message: "Unauthorizes" });
   }
   next();
 };
