@@ -1,5 +1,7 @@
-const dotenv = require("dotenv");
-dotenv.config();
+if (!process.env.NODE_ENV) {
+  const dotenv = require("dotenv");
+  dotenv.config();
+}
 module.exports = {
   PORT: process.env.PORT || 8000,
   MONGO_URI:
