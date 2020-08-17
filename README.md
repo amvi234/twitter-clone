@@ -1,5 +1,5 @@
 # CHECKLIST
----
+
 ## Day 1
 - [ ] Git introduction and setup.
   - [ ] Git vs GitHub/GitLab and other services
