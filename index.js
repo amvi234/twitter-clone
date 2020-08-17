@@ -41,6 +41,9 @@ app.get("/", (req, res) => {
 app.use("/api", authRoute);
 app.use("/users", userRoute);
 app.use("/chitter", chitterRoute);
+app.get("/*", (req, res) =>
+  res.render("404.ejs", { title: "Ye konsi line me aa gaye aap?" })
+);
 
 app.listen(config.PORT, (err) => {
   if (err) return console.log(err, " an error occured");
