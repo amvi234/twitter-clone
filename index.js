@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const morgan = require("morgan");
+// const morgan = require("morgan");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
@@ -23,7 +23,7 @@ mongoose.connection.on("error", () => {
   throw new Error(`unable to connect to the databse: ${config.mongoUri}`);
 });
 
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "static")));
 app.set("view engine", "ejs");
 app.use(express.json());
