@@ -28,7 +28,15 @@ const list = (req, res) => {
         error: "Couldn't get the users",
       });
     }
-    return res.status(200).json(user);
+    user.forEach((u) => {
+      u.hashed_password = undefined;
+      u.salt = undefined;
+    });
+    return res.status(200).render("user-list.ejs", {
+      users: user,
+      title: "Chitter | Users",
+      user: req.auth,
+    });
   });
 };
 
@@ -49,7 +57,10 @@ const userByUsername = (req, res, next, username) => {
 const read = (req, res) => {
   req.profile.hashed_password = undefined;
   req.profile.salt = undefined;
-  return res.status(200).json(req.profile);
+  return res.status(200).render("user.ejs", {
+    user: req.profile,
+    title: `${req.profile.name}'s profile`,
+  });
 };
 
 const update = (req, res) => {

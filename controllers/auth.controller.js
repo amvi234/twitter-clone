@@ -4,7 +4,6 @@ const User = require("../models/user.model");
 const config = require("../config/config");
 
 const signin = (req, res) => {
-  console.log(req);
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err || !user) {
       return res.status(404).json({
@@ -37,12 +36,10 @@ const signout = (req, res) => {
 
 const requireSignIn = (req, res, next) => {
   if (!req.cookies.t)
-    return res
-      .status(401)
-      .render("error.ejs", {
-        title: "Please Login",
-        message: "Please login to continue",
-      });
+    return res.status(401).render("error.ejs", {
+      title: "Please Login",
+      message: "Please login to continue",
+    });
   const decoded = jwt.verify(req.cookies.t, config.JWT_SECRET);
   req.auth = decoded;
   next();

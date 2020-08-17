@@ -2,7 +2,12 @@
 
 <div class="chitter">
   <div class="chitter-content">
-    <p><%= chitter.username %></p>
+    <% if(hasAuth){ %>
+    <button data-resource="chitter/<%=chitter._id%>" class="delete-btn">
+      Delete
+    </button>
+    <%}%>
+    <p><a href="/users/<%= chitter.username %>"><%= chitter.username %></a></p>
     <h2><%= chitter.chitter %></h2>
   </div>
 

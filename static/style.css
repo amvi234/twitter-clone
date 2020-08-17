@@ -172,3 +172,13 @@ nav ul {
 nav ul a {
   margin: 10px;
 }
+
+.delete-btn {
+  border: none;
+  background-color: transparent;
+  color: rgb(243, 73, 73);
+  text-decoration: underline;
+  float: right;
+  margin-top: 20px;
+  cursor: pointer;
+}

@@ -32,13 +32,11 @@ const list = (req, res) => {
           error: "Couldn't get chitters.",
         });
       }
-      res
-        .status(200)
-        .render("chitters.ejs", {
-          chitters: chitter,
-          title: "Chitters",
-          user: req.auth,
-        });
+      res.status(200).render("chitters.ejs", {
+        chitters: chitter,
+        title: "Chitters",
+        user: req.auth,
+      });
     });
 };
 
@@ -59,6 +57,26 @@ const read = (req, res) => {
     chitter: req.chitter,
     title: `Chitter | ${req.chitter.chitter}`,
     user: req.auth,
+    hasAuth: req.auth.username === req.chitter.username,
+  });
+};
+
+const hasAuth = (req, res, next) => {
+  if (req.auth.username === req.chitter.username) {
+    next();
+  }
+};
+
+const remove = (req, res) => {
+  console.log("Entered");
+  req.chitter.deleteOne((err, deletedChitter) => {
+    if (err) {
+      res.status(400).render("error.ejs", {
+        title: "Couldn't Delete",
+        message: "Couldn't delete this chitter.",
+      });
+    }
+    res.status(400).redirect("/chitter");
   });
 };
 
@@ -85,4 +103,4 @@ const newComment = (req, res) => {
   res.status(200).redirect(`/chitter/${chitter._id}`);
 };
 
-module.exports = { create, list, findById, read, newComment };
+module.exports = { create, list, findById, read, newComment, remove, hasAuth };
